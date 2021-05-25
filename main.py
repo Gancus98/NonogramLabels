@@ -70,57 +70,81 @@ def reverseSolveNonogram(nonogram_vector):
     string += "]"
     return string
 
-# generate to file all labels for each function
-# labels = generateCombinations(4)
-# functions = generateCombinations(len(labels))
-# labels_list = []
-# findex = 0
-# my_file=open("function_label.txt","w")
-# print(len(functions))
-# for x in functions:
-#     print(findex)
-#     label = reverseSolveNonogram(x)
-#     labels_list.append(label)
-#     line = str(findex) + " " + label + "\n"
-#     my_file.write(line)
-#     findex += 1
-#################################################
 
-# for each function check how many logical solution have
-# counter = 0
-# counters = []
-# tempindex = 0
-# for x in labels_list:
-#     print(tempindex)
-#     for y in labels_list:
-#         if x == y:
-#             counter += 1
-#     counters.append(counter)
-#     counter = 0
-#     tempindex += 1
-# index = 0
-# for x in labels_list:
-#     print(index, counters[index])
-#     index += 1
-########################################################
+def generate_labels_for_each_function(file_name):
+    labels = generateCombinations(4)
+    functions = generateCombinations(len(labels))
+    labels_list = []
+    findex = 0
+    my_file=open(file_name,"w")
+    for x in functions:
+        label = reverseSolveNonogram(x)
+        labels_list.append(label)
+        line = str(findex) + " " + label + "\n"
+        my_file.write(line)
+        findex += 1
+    return labels_list
 
 
+def check_number_of_logical_solutions(labels_list):
+    counter = 0
+    counters = []
+    tempindex = 0
+    for x in labels_list:
+        print(tempindex)
+        for y in labels_list:
+            if x == y:
+                counter += 1
+        counters.append(counter)
+        counter = 0
+        tempindex += 1
+    index = 0
+    for x in labels_list:
+        print(index, counters[index])
+        index += 1
 
-# get statistic
-my_file=open("data.txt","r")
-list_of_ocures = []
-for line in my_file:
-    record = line.split(" ")
-    list_of_ocures.append(int(record[1]))
 
-a = dict(Counter(list_of_ocures))
-print(a)
-plt.xticks(np.arange(min(a.keys()), max(a.keys()) + 1, 1))
-plt.xlabel("Number of logical solutions")
-plt.ylabel("Number of functions")
-plt.title("Distribution of function depending on the number of logical solution")
-plt.bar(a.keys(), a.values(), color='g')
-plt.show()
-#########################################################
+def create_statistic_of_logical_solutions(file_name):
+    my_file=open(file_name,"r")
+    list_of_ocures = []
+    for line in my_file:
+        record = line.split(" ")
+        list_of_ocures.append(int(record[1]))
+    distribution = dict(Counter(list_of_ocures))
+    print(distribution)
+    plt.xticks(np.arange(min(distribution.keys()), max(distribution.keys()) + 1, 1))
+    plt.xlabel("Number of logical solutions")
+    plt.ylabel("Number of functions")
+    plt.title("Distribution of function depending on the number of logical solution")
+    plt.bar(distribution.keys(), distribution.values(), color='g')
+    plt.show()
 
+
+# 4BitClasses.txt
+def create_statistic_of_classes(file_name):
+    my_file=open(file_name,"r")
+    list = []
+    for line in my_file:
+        record = line.split(";")
+        list.append(int(record[0]))
+
+    distribution_by_class = Counter(list)
+    print(distribution_by_class)
+    plt.title("Distribution number of functions depending on the class")
+    plt.xlabel("Class number")
+    plt.ylabel("Number of functions")
+    plt.bar(distribution_by_class.keys(), distribution_by_class.values(), color='g')
+    plt.show()
+
+    distribution_by_sum_of_function_for_each_class = Counter(distribution_by_class.values())
+    print(distribution_by_sum_of_function_for_each_class)
+    plt.title("Distribution of function by number of same function amount in class")
+    plt.ylabel("Count of function with same number function belong class")
+    plt.xlabel("Number of function in class")
+    plt.bar(distribution_by_sum_of_function_for_each_class.keys(), distribution_by_sum_of_function_for_each_class.values(), color='g', width=10)
+    plt.show()
+
+
+
+create_statistic_of_logical_solutions("number_of_logical_solution_for_each_function.txt")
 
